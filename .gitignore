@@ -1,0 +1,4 @@
+# JetBrains directory
+.idea
+# Cargo Rust target-dir
+target
