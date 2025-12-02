@@ -2,6 +2,10 @@ fn parse_line(line: &str) -> Vec<&str> {
     line.split(',').collect::<Vec<&str>>()
 }
 
+pub fn get_part_1() -> u64 {
+    1227775554
+}
+
 pub fn part_1(file: &String) -> u64 {
     // Add numbers that are composed of some sequence of digits repeated twice
     let mut counter = 0;
@@ -30,6 +34,10 @@ pub fn part_1(file: &String) -> u64 {
         }
     }
     counter
+}
+
+pub fn get_part_2() -> u64 {
+    4174379265
 }
 
 pub fn part_2(file: &String) -> u64 {

@@ -10,6 +10,10 @@ fn parse_line(line: &str) -> (bool, i16) {
     (direction, step)
 }
 
+pub fn get_part_1() -> i16 {
+    3
+}
+
 pub fn part_1(file: &String) -> i16 {
     // Count number of times the dial stop at 0
     let mut begin = 50;
@@ -26,6 +30,10 @@ pub fn part_1(file: &String) -> i16 {
         }
     }
     counter
+}
+
+pub fn get_part_2() -> i16 {
+    6
 }
 
 pub fn part_2(file: &String) -> i16 {
