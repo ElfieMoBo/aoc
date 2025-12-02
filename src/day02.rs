@@ -1,78 +1,74 @@
-fn parse_line(line: &str) -> Vec<&str> {
-    line.split(',').collect::<Vec<&str>>()
+fn parse_line(line: &str) -> Vec<(u64, u64)> {
+    line
+        .split(',')
+        .collect::<Vec<_>>()
+        .into_iter()
+        .map(|s| match s.split('-').collect::<Vec<_>>()[..] {
+            [a, b] => (a.parse::<u64>().unwrap(), b.parse::<u64>().unwrap()),
+            _ => unreachable!(),
+        })
+        .collect()
 }
 
 pub fn get_part_1() -> u64 {
     1227775554
 }
 
+fn is_valid_1(n: u64) -> bool {
+    if n < 10 {
+        return false;
+    }
+    let n_str = n.to_string();
+    let n_len = n_str.len();
+    if n_len % 2 == 0 {
+        return n_str[..(n_len/2)] == n_str[(n_len / 2)..];
+    }
+    false
+}
+
+
 pub fn part_1(file: &String) -> u64 {
     // Add numbers that are composed of some sequence of digits repeated twice
-    let mut counter = 0;
-    let ranges = parse_line(file);
-    for range in ranges {
-        let vector = range.split('-').collect::<Vec<&str>>();
-        let (inf, sup): (u64, u64) = (
-            vector[0].parse().expect("failed to parse inf"),
-            vector[1].parse().expect("failed to parse sup"),
-        );
-        for i in inf..=sup {
-            let i_string = i.to_string();
-            let mut cut = i_string.len();
-            if (cut % 2) == 1 {
-                continue;
-            } else {
-                cut = cut / 2
-            }
-            let (low_part, high_part): (u64, u64) = (
-                i_string[..cut].parse().expect("failed to parse"),
-                i_string[cut..].parse().expect("failed to parse"),
-            );
-            if low_part == high_part {
-                counter += i;
-            }
-        }
-    }
-    counter
+    parse_line(file)
+        .into_iter()
+        .map(|(a, b)| (a..=b).collect::<Vec<_>>().iter().filter(|n| is_valid_1(**n)).sum::<u64>())
+        .collect::<Vec<_>>()
+        .into_iter()
+        .sum()
 }
 
 pub fn get_part_2() -> u64 {
     4174379265
 }
 
-pub fn part_2(file: &String) -> u64 {
-    // Add numbers that are composed of some sequence of digits repeated at least twice
-    let mut counter = 0;
-    let ranges = parse_line(file);
-    for range in ranges {
-        let vector = range.split('-').collect::<Vec<&str>>();
-        let (inf, sup): (u64, u64) = (
-            vector[0].parse().expect("failed to parse inf"),
-            vector[1].parse().expect("failed to parse sup"),
-        );
-        for i in inf..=sup {
-            let i_string = i.to_string();
-            let cut = i_string.len();
-            if cut == 1 {
-                continue;
-            }
-            let mut divisors = divisors::get_divisors(cut);
-            if !divisors.contains(&cut) {
-                divisors.push(cut);
-            }
-            for div in divisors.iter() {
-                let mut slices = Vec::new();
-                let n = cut / div;
-                for j in 0..(*div) {
-                    let slice = i_string[j * n..(j + 1) * n].to_string();
-                    slices.push(slice);
-                }
-                if slices.iter().min().unwrap() == slices.iter().max().unwrap() {
-                    counter += i;
-                    break;
-                }
+fn is_valid_2(n: u64) -> bool {
+    if n < 10 {
+        return false;
+    }
+    let n_str = n.to_string();
+    let n_len = n_str.len();
+    for i in 1..n_len {
+        if n_len % i == 0 {
+            let slices = n_str.as_bytes()
+                .chunks(i)
+                .map(str::from_utf8)
+                .collect::<Result<Vec<&str>, _>>()
+                .unwrap();
+            if slices.iter().max() == slices.iter().min() {
+                return true;
             }
         }
     }
-    counter
+    false
+}
+
+
+pub fn part_2(file: &String) -> u64 {
+    // Add numbers that are composed of some sequence of digits repeated at least twice
+    parse_line(file)
+        .into_iter()
+        .map(|(a, b)| (a..=b).collect::<Vec<_>>().iter().filter(|n| is_valid_2(**n)).sum::<u64>())
+        .collect::<Vec<_>>()
+        .into_iter()
+        .sum()
 }
