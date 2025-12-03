@@ -13,7 +13,7 @@ macro_rules! set_day {
     };
 }
 
-set_day!(day02);
+set_day!(day03);
 
 fn main() {
     let input =
